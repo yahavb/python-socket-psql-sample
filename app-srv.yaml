@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: python-app-srv
+  name: python-app-srv
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: python-app-srv
+  template:
+    metadata:
+      labels:
+        app: python-app-srv
+    spec:
+      #nodeSelector:
+      #  lifecycle: Ec2Spot
+      terminationGracePeriodSeconds: 20
+      containers:
+      - env:
+        - name: TCP_BUFF_SIZE
+          value: "1024"
+        - name: SRV_PORT
+          value: "65123"
+        - name: DBHOST
+          value: "craft.cluster-ccgqlhzmgy9f.us-west-2.rds.amazonaws.com"
+        image: 163538056407.dkr.ecr.us-west-2.amazonaws.com/python-socket-psql-sample:0.1
+        imagePullPolicy: Always
+        name: python-socket-psql-sample
+        command: ["python3","/start-srv.py"]
+        resources:
+          requests:
+            cpu: 128m
+            memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: python-srv-svc
+spec:
+  selector:
+    app: python-app-srv
+  ports:
+    - protocol: TCP
+      port: 65123
+      targetPort: 65123

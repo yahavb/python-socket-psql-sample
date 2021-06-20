@@ -1,0 +1,12 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+  "Resources" : {
+    "PYSOCKECR" : {
+        "Type" : "AWS::ECR::Repository",
+        "Properties" : {
+            "RepositoryName" : "python-socket-psql-sample"
+        }
+    }
+  }
+}
+
