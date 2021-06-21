@@ -2,7 +2,7 @@
 
 import socket
 import threading
-import pg8000
+import pg8000.native
 import os
 import time
 import logging
@@ -12,7 +12,7 @@ PORT = int(os.environ.get('SRV_PORT'))
 DBHOST=os.environ.get('DBHOST')
 TCP_BUFF_SIZE=int(os.environ.get('TCP_BUFF_SIZE'))
 
-conn=pg8000.connect(
+dbconn=pg8000.connect(
         "postgres",
         host = DBHOST,
         password = "Admin1234!"
@@ -20,15 +20,14 @@ conn=pg8000.connect(
 
 def get_transaction():
   print('get_transaction')
-  cur = conn.cursor()
-  ret=cur.execute('select rowid from block limit 1') 
-  cur.close()
-  print('transaction from db is {}'.format(ret))
-  return ret
+  for row in dbconn.run("select id from delivery limit 10"):
+    print('transaction from db is {}'.format(row))
 
 def thread_handler(request):
   print('thread_handler.run():{}'.format(request)) 
-  conn.sendall(str.encode('thread_handler.run():'+str(request)+' db trs:'+get_transaction()))
+  trsid=get_transaction()
+  #conn.sendall(str.encode('thread_handler.run():'+str(request)+' db trs:'+get_transaction()))
+  conn.sendall(str.encode('thread_handler.run():'+str(request)+' db trs:get_transaction()'))
 
 
 if __name__ == '__main__':

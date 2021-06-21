@@ -22,9 +22,9 @@ spec:
         - name: TCP_BUFF_SIZE
           value: "1024"
         - name: SRV_PORT
-          value: "65123"
+          value: "65124"
         - name: DBHOST
-          value: "craft.cluster-ccgqlhzmgy9f.us-west-2.rds.amazonaws.com"
+          value: "database-1-instance-1.czk5ni6ofaxj.us-west-2.rds.amazonaws.com"
         image: 163538056407.dkr.ecr.us-west-2.amazonaws.com/python-socket-psql-sample:0.1
         imagePullPolicy: Always
         name: python-socket-psql-sample
@@ -43,5 +43,5 @@ spec:
     app: python-app-srv
   ports:
     - protocol: TCP
-      port: 65123
-      targetPort: 65123
+      port: 65124
+      targetPort: 65124
