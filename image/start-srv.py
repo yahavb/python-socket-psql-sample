@@ -6,16 +6,37 @@ import pg8000.native
 import os
 import time
 import logging
+import boto3
+import base64
+import json
+from botocore.exceptions import ClientError
+
 
 HOST = '0.0.0.0'  
 PORT = int(os.environ.get('SRV_PORT'))
 DBHOST=os.environ.get('DBHOST')
 TCP_BUFF_SIZE=int(os.environ.get('TCP_BUFF_SIZE'))
+SECRET_NAME = os.environ.get('DBSECRET')
+REGION_NAME = os.environ.get('REGION')
+SECRET_NAME="python-socket-psql-sample-db"
+REGION_NAME="us-west-2"
+
+session = boto3.session.Session()
+client = session.client(
+  service_name='secretsmanager',
+  region_name=REGION_NAME
+)
+secret = client.get_secret_value(
+         SecretId=SECRET_NAME
+)
+secret_dict = json.loads(secret['SecretString'])
+username = secret_dict['username']
+passw = secret_dict['password']
 
 dbconn=pg8000.connect(
-        "postgres",
+        username,
         host = DBHOST,
-        password = "Admin1234!"
+        password = passw
     )
 
 def get_transaction():
