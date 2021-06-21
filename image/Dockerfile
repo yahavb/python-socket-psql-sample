@@ -8,7 +8,7 @@ RUN apt-get install -y curl vim unzip telnet netcat net-tools
 #RUN curl -o /usr/local/bin/jq http://stedolan.github.io/jq/download/linux64/jq && \
 #  chmod +x /usr/local/bin/jq
 
-#RUN DEBIAN_FRONTEND=noninteractive apt-get install -y postgresql
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y postgresql
 RUN apt-get install --no-install-recommends -y python3.8 python3-pip python3.8-dev
 RUN python3 -m pip install pg8000
 #RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"

@@ -20,7 +20,7 @@ dbconn=pg8000.connect(
 
 def get_transaction():
   print('get_transaction')
-  for row in dbconn.run("select id from delivery limit 10"):
+  for row in dbconn.run("select id from pythonsocketpsqlsample limit 10"):
     print('transaction from db is {}'.format(row))
 
 def thread_handler(request):
