@@ -2,22 +2,24 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: python-app-cli
-  name: python-app-cli
+    app: python-app-cli-2
+  name: python-app-cli-2
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: python-app-cli
+      app: python-app-cli-2
   template:
     metadata:
       labels:
-        app: python-app-cli
+        app: python-app-cli-2
     spec:
       #nodeSelector:
       #  lifecycle: Ec2Spot
       containers:
       - env:
+        - name: TCPCMD
+          value: "ping2"
         image: 163538056407.dkr.ecr.us-west-2.amazonaws.com/python-socket-psql-sample:0.1
         imagePullPolicy: Always
         name: python-socket-psql-sample

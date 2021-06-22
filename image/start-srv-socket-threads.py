@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import socket
-import socketserver
+import threading
 import pg8000.native
 import os
 import time
@@ -36,23 +36,33 @@ dbconn=pg8000.connect(
         host = DBHOST,
         password = passw
     )
+
 def get_transaction():
   print('get_transaction',flush=True)
   for row in dbconn.run("select id from pythonsocketpsqlsample limit 10"):
     print('transaction from db is {}'.format(row),flush=True)
 
-class Handler(socketserver.BaseRequestHandler):
-  def handle(self):
-    #while True:
-      print('Handler thread_handler.run()',flush=True) 
-      self.data=self.request.recv(TCP_BUFF_SIZE).strip()
-      print('Handler thread_handler-data={}'.format(self.data),flush=True)
-      get_transaction()
-      self.request.sendall(self.data.upper())
+def thread_handler(request):
+  print('thread_handler.run():{}'.format(request),flush=True) 
+  trsid=get_transaction()
+  #conn.sendall(str.encode('thread_handler.run():'+str(request)+' db trs:'+get_transaction()))
+  conn.sendall(str.encode('thread_handler.run():'+str(request)+' db trs:get_transaction()'))
 
 
 if __name__ == '__main__':
   print('server starts',flush=True)
-  server = socketserver.TCPServer((HOST, PORT), Handler)
-  print('server listen on {}:{}'.format(HOST,PORT),flush=True)
-  server.serve_forever()
+  with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.bind((HOST, PORT))
+    s.listen()
+    print('server listen on {}:{}'.format(HOST,PORT),flush=True)
+    while True:
+      conn, addr = s.accept()
+      with conn:
+        print('Connected by {}'.format(addr),flush=True)
+        while True:
+            request = conn.recv(TCP_BUFF_SIZE)
+            if not request:
+                break
+            req_thread = threading.Thread(target=thread_handler,args=(request,))
+            req_thread.start()
+    s.close() 

@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import socket
-import socketserver
+import SocketServer
 import pg8000.native
 import os
 import time
@@ -36,23 +36,21 @@ dbconn=pg8000.connect(
         host = DBHOST,
         password = passw
     )
-def get_transaction():
-  print('get_transaction',flush=True)
-  for row in dbconn.run("select id from pythonsocketpsqlsample limit 10"):
-    print('transaction from db is {}'.format(row),flush=True)
+class GTCPHandler(SocketServer.BaseRequestHandler):
+  def get_transaction():
+    print('GTCPHandler get_transaction',flush=True)
+    for row in dbconn.run("select id from pythonsocketpsqlsample limit 10"):
+      print('GTCPHandler transaction from db is {}'.format(row),flush=True)
 
-class Handler(socketserver.BaseRequestHandler):
-  def handle(self):
-    #while True:
-      print('Handler thread_handler.run()',flush=True) 
-      self.data=self.request.recv(TCP_BUFF_SIZE).strip()
-      print('Handler thread_handler-data={}'.format(self.data),flush=True)
-      get_transaction()
-      self.request.sendall(self.data.upper())
-
+  def thread_handler(self):
+    print('GTCPHandler thread_handler.run()',flush=True) 
+    self.request=self.request.recv(TCP_BUFF_SIZE).strip()
+    print('GTCPHandler thread_handler-request={}'.format(request)
+    trsid=get_transaction()
+    self.request.sendall(str.encode(request.upper()))
 
 if __name__ == '__main__':
   print('server starts',flush=True)
-  server = socketserver.TCPServer((HOST, PORT), Handler)
+  server = SocketServer.TCPServer((HOST, PORT), thread_handler)
   print('server listen on {}:{}'.format(HOST,PORT),flush=True)
-  server.serve_forever()
+  server.serve_foreever()
