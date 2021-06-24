@@ -19,8 +19,8 @@ spec:
       containers:
       - env:
         - name: TCPCMD
-          value: "ping1"
-        image: 163538056407.dkr.ecr.us-west-2.amazonaws.com/python-socket-psql-sample:0.1
+          value: "pong1"
+        image: 163538056407.dkr.ecr.us-west-2.amazonaws.com/python-socket-psql-sample:0.2
         imagePullPolicy: Always
         name: python-socket-psql-sample
         command: ["/start-cli.sh"]

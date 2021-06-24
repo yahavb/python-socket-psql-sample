@@ -1,7 +1,7 @@
 #!/bin/bash
   
 #region="us-west-2"
-version="0.1"
+version="latest"
 
 region=$(cat config | grep region | awk -F\= '{print $2}'|sed 's/ //g')
 account=$(aws sts get-caller-identity --output text --query Account)
